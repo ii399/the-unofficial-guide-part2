@@ -57,6 +57,15 @@ in at least 4 of 5 tries.
      Was there a clean gap, or did the two groups overlap? -->
 The two groups did not overlap at all. My five in-corpus questions scored 0.178 to 0.456 and the five out-of-corpus ones scored 0.825 to 0.934, leaving a 0.37-wide gap with nothing in it, so a cutoff of 0.6 separates them with margin on both sides. I still said 4 of 5 rather than 5 of 5 because that gap is only this clean while my out-of-corpus questions are about unrelated subjects — a question that sounded like campus life but was not covered would land far closer to the line.
 
+> **Revised in week 2:** The gate also refuses at least 4 of 5 campus-sounding
+> questions that my corpus does not answer.
+>
+> **Why revised:** This tightens the target rather than lowering it. The original
+> five questions were all from unrelated subjects, so the criterion could not
+> tell whether the gate stopped the questions that actually matter. At 0.6 it
+> refused only 2 of 5 campus-sounding ones.
+
+
 ---
 
 ## 4. Something about your chunks

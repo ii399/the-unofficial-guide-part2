@@ -334,9 +334,10 @@ I would revise the criterion to: “The gate denies at least 4 out of 5 campus-r
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** I lowered the relevance cutoff (`THRESHOLD` in `config.py`) from 0.6 to 0.46, and added five campus-sounding questions that my corpus does not answer to `OUT_OF_SCOPE` in `questions.py`, so the eval now tests the gate against harder questions.
 
-**Why I picked it:**
+**Why I picked it:** My diagnosis said criterion 3 was only tested against distant questions; when I measured five campus-sounding questions my documents don't answer, the gate at 0.6 let three of them through (0.282, 0.468, 0.477), so the gate was too loose for exactly the kind of question it most needs to stop.
+ 
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
@@ -348,11 +349,24 @@ I would revise the criterion to: “The gate denies at least 4 out of 5 campus-r
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET |
+| 3. Gate stops out-of-corpus questions (original five) | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET |
+| 3 (revised). Gate stops campus-sounding questions my corpus can't answer | 4 of 5 | 4 of 5 | 4 of 5 | 4 of 5 | MET |
+| 4. Every chunk is one complete document | 88 of 88 | 88 of 88 | 88 of 88 | 88 of 88 | MET |
+| 5. Every named source contains the answer | 5 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET |
+
+Evidence file: `results/run_2026-09-30_0114_after.md`, produced by `run_eval.py::main`
+and `run_eval.py::check_out_of_scope`, cutoff 0.46. Refused 9 of 10.
+
+| Campus-sounding question (not in corpus) | Best distance | Gate at 0.6 (before) | Gate at 0.46 (after) |
+|---|---|---|---|
+| What is the maximum number of credit hours a student can take in one semester? | 0.468 | let through | refused |
+| What time does the campus gym open? | 0.477 | let through | refused |
+| How much does a room in Aldridge Hall cost per semester? | 0.282 | let through | **let through** |
+| How many student clubs are there on campus? | 0.641 | refused | refused |
+| What GPA do students need to keep a scholarship? | 0.622 | refused | refused |
+
 
 **Did it help?**
 
@@ -362,6 +376,15 @@ I would revise the criterion to: “The gate denies at least 4 out of 5 campus-r
      tell.
 
      Milestone 4. -->
+
+Yes, partly, but there was a tradeoff.
+
+Lowering the cutoff from 0.6 to 0.46 improved the gate from refusing 2 of 5 campus-related questions to 4 of 5, meeting my revised criterion 3. My real questions still passed, cited the correct files, and the original out-of-corpus questions were still refused.
+
+The downside is the smaller margin. My parking question scored 0.456, only 0.004 below the new cutoff, so a slight wording change could cause a valid question to be refused.
+
+The cutoff also could not catch everything. The Aldridge Hall pricing question scored 0.282 because it matched the topic, even though my documents did not contain the answer. However, the generation stage caught it. `app.py ask` correctly responded that there was not enough information instead of making up an answer.
+
 
 ## What's Still Broken
 
@@ -373,9 +396,23 @@ I would revise the criterion to: “The gate denies at least 4 out of 5 campus-r
 
      Milestone 5. -->
 
+No criteria are missed after the fix, but three areas are still weak.
+
+1. **The Aldridge Hall question still passes the gate** at 0.282. The gate measures topic similarity, not whether the answer exists. The model correctly refused to answer, but still cited `housing_aldridge_hall.txt`. Next, I would update `generate.py` so refusals do not cite a source.
+2. **The parking question is very close to the cutoff**, scoring 0.456 against 0.46. I would test a few rewordings to make sure valid questions are not refused.
+3. **My scorer uses simple text matching.** For example, `"20"` could match `"120"`, while `"ten days"` would not match `"10 days"`. It worked correctly in my tests, but this could cause problems later.
+
+I stopped here because the change met my revised target without affecting the other criteria. Fixing the prompt would be a separate change, and Week 2 asks for only one.
+
+
 ## What I'd Do Differently
 
 <!-- Knowing what you know now — which of your five criteria would you write
      differently, and why?
 
      Milestone 5. -->
+
+I would have written criterion 3 using campus-related questions from the start. Questions about Mongolia and diesel engines only showed that the gate could reject completely unrelated topics. The real test was questions that sounded like they belonged in my corpus but could not actually be answered from it. Those were the questions the original gate struggled with.
+
+I would also change criterion 1 from **4 of 5** to **5 of 5**. Each question asks for one fact from one document, so allowing one miss was unnecessary, especially since all five were consistently retrieved.
+
