@@ -216,6 +216,14 @@ word that appears in the file it came from.
 **2.** I asked Claude for a criterion about my chunks and it gave me "no chunk is
 split mid-sentence." I indexed the corpus and saw that my longest document is 549 characters against a chunk size of 800, so nothing in my corpus splits at all and the criterion could not fail. I rewrote it to state the whole baseline (88 documents producing 88 chunks, one source per chunk, every chunk ending in sentence punctuation) so that it still passes today but would break the moment a milestone 3 change starts splitting documents.
 
+*Added in week 2:*
+
+**3.** My before run met all five criteria, so I focused on the weakness I identified in Week 1: campus-related questions that my documents cannot answer. Claude confirmed five such questions had no answers in the 88 files and tested them with `app.py retrieve`. At the 0.6 cutoff, three passed the gate.
+Claude found that the gate measures topic similarity, not whether the answer is actually in the document. For example, the Aldridge Hall pricing question scored 0.282 even though no price was provided. The model still refused to answer when tested with `app.py ask`. I chose to lower the cutoff to 0.46, which blocked two of the three, but the Aldridge Hall question remains a limitation that a cutoff alone cannot fix. The new cutoff also leaves my parking question with only a 0.004 margin.
+
+**4.** I had Claude create `scorer.py`, which checks whether the expected phrase appears in the answer. Claude pointed out that simple text matching has limitations. For example, `"20"` could match `"120"`, while `"ten days"` would not match `"10 days"`.
+The scorer worked correctly in my tests, but I didn't rely on it alone. For criterion 5, I had Claude check each cited file to confirm the answer was actually supported by it. I included the scorer limitation under **What's Still Broken**.
+
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
