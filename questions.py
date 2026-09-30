@@ -43,8 +43,12 @@ OUT_OF_SCOPE = [
     "Who won the 1994 World Cup?",
     "What is the recommended dosage of ibuprofen for a headache?",
     "How do I write a for loop in Rust?",
+    "What is the maximum number of credit hours a student can take in one semester?",
+    "What time does the campus gym open?",
+    "How much does a room in Aldridge Hall cost per semester?",
+    "How many student clubs are there on campus?",
+    "What GPA do students need to keep a scholarship?",
 ]
-
 
 def answered() -> list[dict]:
     """The questions you've actually filled in."""

@@ -322,6 +322,16 @@ Students who miss the permit window park on Verrill Street and walk in. This inf
 
      Milestone 3. -->
 
+I did not find anything missing. All five conditions were present in all three attempts, so there was no missing data or failing stage to diagnose.
+
+Actually, two of my targets were set pretty low. Requirements 1 and 3 had a target of 4 out of 5, but every run scored 5 out of 5. Criterion 1 was met easily because each of my five questions was looking for one specific piece of information from one document. The retrieval only needed to find one matching source.
+
+Criterion 3 was also met easily because my five out-of-corpus questions were on completely different topics, such as Mongolia, diesel engines, and the World Cup. Their scores ranged from 0.825 to 0.934, which was well above the 0.6 threshold.
+
+The one criterion I would revise is criterion 3. In my Week 1 write-up, I noted that the cutoff was tested only with questions that were very different from the information in my corpus. A better test would be a question that sounds like it could be related to my college experience but is not actually answered anywhere in my documents. A question like that could score much closer to 0.6, and the gate might allow it through even though the corpus does not contain the answer.
+
+I would revise the criterion to: “The gate denies at least 4 out of 5 campus-related questions that my corpus cannot answer.”    
+
 ## The Improvement
 
 **What I changed:**
