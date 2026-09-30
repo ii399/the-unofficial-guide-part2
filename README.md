@@ -244,15 +244,43 @@ split mid-sentence." I indexed the corpus and saw that my longest document is 54
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET |
+| 4. Every chunk is one complete document | 88 of 88 | 88 of 88 | 88 of 88 | 88 of 88 | MET |
+| 5. Every named source contains the answer | 5 of 5 | 5 of 5 | 5 of 5 | 5 of 5 | MET |
+
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
      Name the file and function that produced it. -->
+
+Evidence file: `results/run_2026-09-29_2316_before.md`, produced by `run_eval.py::main`.
+
+**Criteria 1, 2 and 5**: parking question, run 1:
+
+```
+- Best distance: 0.4561 (passed the gate)
+- Sources retrieved: admin_parking_permits.txt, dining_halden_hall_followup.txt, dining_north_kitchen_followup.txt, transit_shuttle.txt, transit_walking.txt
+
+Students who miss the permit window park on Verrill Street and walk in. This information comes from `admin_parking_permits.txt`.
+```
+
+**Criterion 3**: produced by `run_eval.py::check_out_of_scope`, cutoff 0.6. Refused 5 of 5.
+
+| Out-of-scope question | Best distance | Gate |
+|---|---|---|
+| What is the capital of Mongolia? | 0.825 | refused |
+| How do I change the oil in a diesel engine? | 0.934 | refused |
+| Who won the 1994 World Cup? | 0.886 | refused |
+| What is the recommended dosage of ibuprofen for a headache? | 0.844 | refused |
+| How do I write a for loop in Rust? | 0.896 | refused |
+
+**Criterion 4**: produced by `chunker.py::fallback_split`:
+
+```
+88 chunks, 317 characters on average (shortest 178, longest 549), produced by chunker.py::fallback_split
+``` 
 
 ## Verdicts
 
@@ -267,11 +295,12 @@ split mid-sentence." I indexed the corpus and saw that my longest document is 54
 
 | # | Criterion | Verdict | How I decided |
 |---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| 1 | Retrieved chunk contains the answer | MET | I checked all 15 runs and confirmed that the file containing the correct answer was retrieved each time. All runs scored 5 out of 5, exceeding the target of 4 out of 5. |
+| 2 | Every answer names a source | MET | All 15 answers correctly identified a .txt file, meeting the target of 5 out of 5. None of the runs fell short. |
+| 3 | Gate stops out-of-corpus questions | MET | The gate failed all 5 tests. The closest out-of-corpus question scored 0.825, which was well above the 0.6 cutoff.|
+| 4 | Every chunk is one complete document | MET | After re-chunking, I got 88 chunks from 88 documents. Each chunk came from a single source, and none of them ended in the middle of a sentence. |
+| 5 | Every named source contains the answer | MET | Each answer cited only one file. I went through the files individually and confirmed that the information provided was actually in the cited source. |
+
 
 ## Diagnoses
 
